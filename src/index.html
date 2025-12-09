@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="styles.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tauri App</title>
+    <script type="module" src="/main.js" defer></script>
+  </head>
+
+  <body>
+<main class="container">
+  <h1>Image Uploader</h1>
+
+  <div id="drop-zone" class="drop-zone">
+    <p>Drag & Drop an image here<br />or</p>
+    <button id="select-btn" type="button">Select Image</button>
+    <input id="file-input" type="file" accept="image/*" hidden />
+  </div>
+
+  <div id="preview" class="preview hidden">
+    <img id="preview-img" alt="Selected image" />
+    <div>
+    <button id="ocr-btn" type="button">Run OCR (RU)</button>
+    <button id="ocr-fr-btn" type="button">Run OCR (FR)</button>
+    <button id="merge-btn" type="button">merge</button>
+    </div>
+  </div>
+</main>
+  
+  </body>
+</html>
