@@ -5,8 +5,8 @@ Génère des cartes Anki avec audio russe à partir de photos de manuel.
 ## Flow
 
 1. Photo FR + Photo RU → OCR (Tesseract)
-2. LLM local (Ollama) → correction + matching des paires FR/RU
-3. XTTS v2 → génération audio russe
+2. LLM local (Ollama + Mistral) → matching des paires FR/RU + correction OCR
+3. Silero TTS → génération audio russe
 4. AnkiConnect → injection dans Anki
 
 ## Prérequis système
@@ -15,26 +15,48 @@ Génère des cartes Anki avec audio russe à partir de photos de manuel.
 sudo dnf install ffmpeg python3.11 tesseract tesseract-langpack-rus tesseract-langpack-fra
 ```
 
-## Setup Python (XTTS v2)
+## Setup Python (Silero TTS)
 
 ```bash
 python3.11 -m venv ~/dev/python/tts-env
 source ~/dev/python/tts-env/bin/activate
-pip install TTS
+pip install torch torchaudio soundfile requests
 ```
 
-> Premier lancement = téléchargement du modèle XTTS v2 (~2.5GB), ensuite 100% offline.
+> Le modèle Silero (~300MB) est téléchargé automatiquement au premier lancement puis mis en cache. 100% offline ensuite.
 
 ## Usage TTS
 
 ```bash
 source ~/dev/python/tts-env/bin/activate
-tts --text "Как ты?" \
-    --model_name "tts_models/multilingual/multi-dataset/xtts_v2" \
-    --language ru \
-    --out_path output.wav
+python pythonscript/tts.py "Как ты?" output.wav
 ffmpeg -i output.wav output.mp3 -y
 ```
+
+## Matching FR/RU (en test)
+
+Le script `pythonscript/matching.py` prend le fichier OCR fusionné et produit des paires FR/RU corrigées via Ollama + Mistral.
+
+```bash
+python pythonscript/matching.py ~/anki.txt
+# Résultat sauvegardé dans result.txt — à relire et corriger manuellement avant import
+```
+
+### Ollama (LLM local)
+
+Ollama tourne sur la machine Windows (RTX 3070) pour des performances optimales.
+
+```powershell
+# Windows - à lancer avant d'utiliser le script
+$env:OLLAMA_HOST = "0.0.0.0"
+ollama serve
+```
+
+- Modèle : `mistral`
+- IP Windows sur le réseau local : `192.168.1.147`
+- L'URL est configurée dans `pythonscript/matching.py`
+
+> ⚠️ Script en phase de test — vérifier et corriger `result.txt` manuellement avant tout import dans Anki.
 
 ## AnkiConnect
 
@@ -54,6 +76,7 @@ npm run tauri dev
 
 ## Notes
 
-- XTTS v2 tourne en CPU only sur Intel (pas de GPU dédié requis)
+- Silero tourne en CPU only sur Intel (pas de GPU dédié requis)
+- Ollama/Mistral tourne sur GPU NVIDIA RTX 3070 (Windows) via réseau local
 - 64GB RAM → pas de contrainte mémoire
 - 100% local après setup
