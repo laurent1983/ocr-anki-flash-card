@@ -21,12 +21,32 @@
   <div id="preview" class="preview hidden">
     <img id="preview-img" alt="Selected image" />
     <div>
-    <button id="ocr-btn" type="button">Run OCR (RU)</button>
-    <button id="ocr-fr-btn" type="button">Run OCR (FR)</button>
-    <button id="merge-btn" type="button">merge</button>
+      <button id="ocr-btn" type="button">Run OCR (RU)</button>
+      <button id="ocr-fr-btn" type="button">Run OCR (FR)</button>
+      <button id="merge-btn" type="button">merge</button>
     </div>
   </div>
+
+  <hr />
+
+  <div id="anki-section">
+    <h2>Anki</h2>
+    <div>
+      <select id="deck-select"></select>
+      <button id="load-decks-btn">Charger les decks</button>
+    </div>
+
+    <div id="scan-section" class="hidden">
+      <button id="scan-btn">Scanner les cartes sans audio</button>
+    </div>
+
+    <div id="cards-section" class="hidden">
+      <p id="cards-count"></p>
+      <ul id="cards-list"></ul>
+      <button id="generate-btn">Générer les audios</button>
+    </div>
+  </div>
+
 </main>
-  
   </body>
 </html>
